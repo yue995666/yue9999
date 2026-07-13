@@ -150,6 +150,13 @@
       box-shadow: 0 14px 28px rgba(0, 168, 135, 0.28);
     }
 
+    .btn.pay {
+      border-color: rgba(255, 107, 87, 0.24);
+      background: linear-gradient(135deg, #ff6b57, #ff9a57);
+      color: #ffffff;
+      box-shadow: 0 14px 26px rgba(255, 107, 87, 0.22);
+    }
+
     .btn.ghost {
       width: 38px;
       padding: 0;
@@ -159,6 +166,29 @@
       border-color: rgba(15, 143, 114, 0.34);
       background: #e7fff7;
       color: #08735b;
+    }
+
+    .unlock-badge {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: rgba(255, 255, 255, 0.82);
+      color: #596677;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 7px 18px rgba(42, 57, 86, 0.08);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .unlock-badge.unlocked {
+      background: #e7fff7;
+      color: #08735b;
+      border-color: rgba(0, 168, 135, 0.26);
     }
 
     .shell {
@@ -309,6 +339,31 @@
       cursor: pointer;
       box-shadow: 0 12px 22px rgba(255, 107, 87, 0.22);
       white-space: nowrap;
+    }
+
+    .ai-action.locked,
+    .template-chip.locked,
+    .tool-btn.locked {
+      position: relative;
+    }
+
+    .ai-action.locked::after,
+    .template-chip.locked::after,
+    .tool-btn.locked::after {
+      content: "1元";
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      min-width: 30px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #ff6b57;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 8px 16px rgba(255, 107, 87, 0.28);
     }
 
     .panel {
@@ -573,6 +628,231 @@
       transform: translateY(0);
     }
 
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(23, 32, 42, 0.36);
+      backdrop-filter: blur(10px);
+      z-index: 20;
+    }
+
+    .modal-backdrop.show {
+      display: grid;
+    }
+
+    .pay-modal {
+      width: min(940px, 100%);
+      max-height: min(820px, calc(100vh - 40px));
+      overflow: auto;
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: 0 30px 90px rgba(23, 32, 42, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+
+    .pay-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: start;
+      padding: 24px 26px;
+      background:
+        linear-gradient(135deg, rgba(0, 168, 135, 0.12), rgba(64, 169, 255, 0.1)),
+        #ffffff;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .pay-head h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .pay-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .close-modal {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .pay-body {
+      padding: 24px 26px 26px;
+      display: grid;
+      grid-template-columns: minmax(280px, .9fr) minmax(320px, 1.1fr);
+      gap: 22px;
+    }
+
+    .price-card {
+      border-radius: 14px;
+      padding: 22px;
+      background: #172033;
+      color: #ffffff;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .price-line {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+    }
+
+    .price-line strong {
+      font-size: 54px;
+      line-height: .92;
+    }
+
+    .price-line span {
+      color: rgba(255, 255, 255, .74);
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .benefits {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .benefits li {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, .9);
+    }
+
+    .benefits li::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      margin-top: 5px;
+      border-radius: 999px;
+      background: #ffd45a;
+      box-shadow: 0 0 0 4px rgba(255, 212, 90, .13);
+    }
+
+    .payment-box {
+      display: grid;
+      gap: 14px;
+    }
+
+    .pay-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .pay-channel {
+      min-height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      cursor: pointer;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .pay-channel.active {
+      border-color: rgba(0, 168, 135, .42);
+      background: #edfff9;
+      color: #08735b;
+    }
+
+    .qr-panel {
+      border-radius: 14px;
+      border: 1px solid #e8eef5;
+      padding: 18px;
+      background: #fbfdff;
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .fake-qr {
+      width: 150px;
+      height: 150px;
+      border-radius: 12px;
+      background:
+        linear-gradient(90deg, #172033 10px, transparent 10px) 0 0 / 24px 24px,
+        linear-gradient(#172033 10px, transparent 10px) 0 0 / 24px 24px,
+        #ffffff;
+      border: 10px solid #ffffff;
+      box-shadow: inset 0 0 0 1px #d9e3ee, 0 10px 22px rgba(42, 57, 86, .08);
+      position: relative;
+    }
+
+    .fake-qr::after {
+      content: "DEMO";
+      position: absolute;
+      inset: 48px 33px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #172033;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .qr-copy strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .qr-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .pay-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pay-note {
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: #fff7df;
+      color: #6f5210;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .integration-flow {
+      border-top: 1px solid #edf2f7;
+      padding-top: 14px;
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
     .hidden-copy {
       position: fixed;
       left: 0;
@@ -642,6 +922,18 @@
         grid-template-columns: 1fr;
       }
 
+      .pay-body {
+        grid-template-columns: 1fr;
+      }
+
+      .qr-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .pay-tabs {
+        grid-template-columns: 1fr;
+      }
+
       .template-chips {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -689,6 +981,14 @@
         </div>
       </div>
       <div class="actions">
+        <div class="unlock-badge" id="unlockBadge">未解锁</div>
+        <button class="btn pay" id="buyBtn">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M6 9h12M8 6h8a3 3 0 0 1 3 3v9H5V9a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 6a3 3 0 0 1 6 0" stroke="currentColor" stroke-linecap="round"/>
+          </svg>
+          <span>1元解锁</span>
+        </button>
         <button class="btn ghost" id="sampleBtn" title="填入示例" aria-label="填入示例">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M12 3v18M3 12h18" stroke="currentColor" stroke-linecap="round"/>
@@ -744,11 +1044,11 @@
         </div>
         <div class="template-chips" aria-label="模板快捷选择">
           <button class="template-chip active" data-template-chip="clean" style="--chip: linear-gradient(90deg, #00a887, #40a9ff);"><i></i><span>清爽阅读</span></button>
-          <button class="template-chip" data-template-chip="business" style="--chip: linear-gradient(90deg, #2f6fed, #8e6cff);"><i></i><span>商务简报</span></button>
+          <button class="template-chip locked" data-template-chip="business" data-premium="true" style="--chip: linear-gradient(90deg, #2f6fed, #8e6cff);"><i></i><span>商务简报</span></button>
           <button class="template-chip" data-template-chip="warm" style="--chip: linear-gradient(90deg, #ffd45a, #ff9a57);"><i></i><span>温和叙事</span></button>
-          <button class="template-chip" data-template-chip="bold" style="--chip: linear-gradient(90deg, #ff6b57, #ff3d8b);"><i></i><span>醒目营销</span></button>
+          <button class="template-chip locked" data-template-chip="bold" data-premium="true" style="--chip: linear-gradient(90deg, #ff6b57, #ff3d8b);"><i></i><span>醒目营销</span></button>
         </div>
-        <button class="ai-action" id="polishBtn">智能清稿</button>
+        <button class="ai-action locked" id="polishBtn">智能清稿</button>
       </div>
     </section>
 
@@ -833,6 +1133,59 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <div id="copyHost" class="hidden-copy" contenteditable="true" tabindex="-1"></div>
 
+  <div class="modal-backdrop" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentTitle">
+    <section class="pay-modal">
+      <div class="pay-head">
+        <div>
+          <h2 id="paymentTitle">1 元体验解锁</h2>
+          <p>解锁高级模板、智能清稿、源码复制和无限复制能力。当前页面先跑通完整购买链路；真实收款接入后会由支付回调自动开通。</p>
+        </div>
+        <button class="close-modal" id="closePaymentBtn" aria-label="关闭支付弹窗">×</button>
+      </div>
+      <div class="pay-body">
+        <aside class="price-card">
+          <div>
+            <div class="price-line"><strong>¥1</strong><span>体验版 / 单次解锁</span></div>
+            <p style="margin: 10px 0 0; color: rgba(255,255,255,.74); line-height: 1.55; font-size: 14px;">适合验证用户是否愿意为公众号排版效率付费。</p>
+          </div>
+          <ul class="benefits">
+            <li>高级模板：商务简报、醒目营销</li>
+            <li>智能清稿：自动整理标题、段落和列表</li>
+            <li>解锁复制：复制到公众号和 HTML 源码</li>
+            <li>本机授权：支付成功后立即开启功能</li>
+          </ul>
+        </aside>
+
+        <section class="payment-box">
+          <div class="pay-tabs" aria-label="选择支付渠道">
+            <button class="pay-channel active" data-channel="wechat">微信支付</button>
+            <button class="pay-channel" data-channel="alipay">支付宝</button>
+            <button class="pay-channel" data-channel="card">其他方式</button>
+          </div>
+          <div class="qr-panel">
+            <div class="fake-qr" aria-label="演示二维码"></div>
+            <div class="qr-copy">
+              <strong id="channelTitle">微信扫码支付 ¥1</strong>
+              <p id="channelDesc">演示版用本地解锁模拟支付成功。正式版这里会展示微信支付 Native 二维码，并等待后端回调确认订单。</p>
+            </div>
+          </div>
+          <div class="pay-actions">
+            <button class="btn primary" id="simulatePaidBtn">我已支付，立即解锁</button>
+            <button class="btn" id="copyOrderBtn">复制订单号</button>
+            <button class="btn" id="resetUnlockBtn">重置未解锁</button>
+          </div>
+          <div class="pay-note">
+            当前是可演示链路：点击“我已支付”会模拟支付成功并解锁。接入真实支付时，需要后端创建订单、支付宝/微信支付回调验签、服务端写入授权状态。
+          </div>
+          <div class="integration-flow">
+            <strong>真实上线链路：</strong>
+            <span>用户点购买 → 后端创建 ¥1 订单 → 跳转/扫码支付 → 支付平台回调 → 后端验签 → 写入用户权益 → 前端刷新解锁。</span>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
   <script>
     const sampleText = `# 怎样把一篇文章排成公众号成稿
 
@@ -871,10 +1224,21 @@
       accent: "#0f8f72",
       fontSize: 16,
       html: "",
-      nodes: []
+      nodes: [],
+      unlocked: false,
+      orderId: ""
     };
 
     const draftKey = "wechat-layout-tool-draft-v2";
+    const unlockKey = "wechat-layout-tool-unlocked-v1";
+    const orderKey = "wechat-layout-tool-order-v1";
+    const PAYMENT_CONFIG = {
+      mode: "demo",
+      productId: "wechat_layout_unlock_001",
+      amountFen: 100,
+      createOrderUrl: "/api/orders",
+      verifyOrderUrl: "/api/orders/verify"
+    };
 
     const editor = document.getElementById("editor");
     const preview = document.getElementById("preview");
@@ -882,6 +1246,8 @@
     const colorInput = document.getElementById("colorInput");
     const fontSelect = document.getElementById("fontSelect");
     const copyBtn = document.getElementById("copyBtn");
+    const buyBtn = document.getElementById("buyBtn");
+    const unlockBadge = document.getElementById("unlockBadge");
     const sampleBtn = document.getElementById("sampleBtn");
     const clearBtn = document.getElementById("clearBtn");
     const htmlBtn = document.getElementById("htmlBtn");
@@ -893,8 +1259,16 @@
     const statsText = document.getElementById("statsText");
     const toast = document.getElementById("toast");
     const copyHost = document.getElementById("copyHost");
+    const paymentModal = document.getElementById("paymentModal");
+    const closePaymentBtn = document.getElementById("closePaymentBtn");
+    const simulatePaidBtn = document.getElementById("simulatePaidBtn");
+    const copyOrderBtn = document.getElementById("copyOrderBtn");
+    const resetUnlockBtn = document.getElementById("resetUnlockBtn");
+    const channelTitle = document.getElementById("channelTitle");
+    const channelDesc = document.getElementById("channelDesc");
     const templateChips = Array.from(document.querySelectorAll("[data-template-chip]"));
     const toolButtons = Array.from(document.querySelectorAll("[data-insert]"));
+    const payChannels = Array.from(document.querySelectorAll("[data-channel]"));
 
     const templateMap = {
       clean: {
@@ -1110,6 +1484,7 @@
       state.html = renderWechatHtml(state.nodes, state);
       preview.innerHTML = state.html;
       updateTemplateChips();
+      updateUnlockUI();
       updateStats();
       queueAutosave();
     }
@@ -1117,7 +1492,94 @@
     function updateTemplateChips() {
       for (const chip of templateChips) {
         chip.classList.toggle("active", chip.dataset.templateChip === state.template);
+        chip.classList.toggle("locked", chip.dataset.premium === "true" && !state.unlocked);
       }
+    }
+
+    function readUnlockState() {
+      try {
+        const raw = localStorage.getItem(unlockKey);
+        const payload = raw ? JSON.parse(raw) : null;
+        state.unlocked = !!payload?.unlocked;
+        state.orderId = payload?.orderId || localStorage.getItem(orderKey) || createOrderId();
+      } catch (error) {
+        state.unlocked = false;
+        state.orderId = createOrderId();
+      }
+      localStorage.setItem(orderKey, state.orderId);
+    }
+
+    function createOrderId() {
+      return `WX-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+    }
+
+    function updateUnlockUI() {
+      unlockBadge.textContent = state.unlocked ? "已解锁" : "未解锁";
+      unlockBadge.classList.toggle("unlocked", state.unlocked);
+      buyBtn.style.display = state.unlocked ? "none" : "inline-flex";
+      polishBtn.classList.toggle("locked", !state.unlocked);
+      copySourceBtn.classList.toggle("success", state.unlocked);
+      for (const chip of templateChips) {
+        chip.classList.toggle("locked", chip.dataset.premium === "true" && !state.unlocked);
+      }
+    }
+
+    function requireUnlock(featureName) {
+      if (state.unlocked) return true;
+      showPaymentModal(featureName);
+      return false;
+    }
+
+    function showPaymentModal(featureName = "高级功能") {
+      if (!state.orderId) state.orderId = createOrderId();
+      localStorage.setItem(orderKey, state.orderId);
+      paymentModal.classList.add("show");
+      showToast(`${featureName}需要先解锁 1 元体验版。`);
+    }
+
+    function hidePaymentModal() {
+      paymentModal.classList.remove("show");
+    }
+
+    function unlockProduct(channel = "demo") {
+      const payload = {
+        unlocked: true,
+        productId: PAYMENT_CONFIG.productId,
+        amountFen: PAYMENT_CONFIG.amountFen,
+        orderId: state.orderId || createOrderId(),
+        channel,
+        paidAt: new Date().toISOString(),
+        mode: PAYMENT_CONFIG.mode
+      };
+      localStorage.setItem(unlockKey, JSON.stringify(payload));
+      localStorage.setItem(orderKey, payload.orderId);
+      state.unlocked = true;
+      state.orderId = payload.orderId;
+      updateUnlockUI();
+      hidePaymentModal();
+      showToast("支付成功，已解锁高级功能。");
+    }
+
+    function resetUnlock() {
+      localStorage.removeItem(unlockKey);
+      state.unlocked = false;
+      state.orderId = createOrderId();
+      localStorage.setItem(orderKey, state.orderId);
+      updateUnlockUI();
+      showToast("已重置为未解锁状态。");
+    }
+
+    function setPaymentChannel(channel) {
+      for (const button of payChannels) {
+        button.classList.toggle("active", button.dataset.channel === channel);
+      }
+      const content = {
+        wechat: ["微信扫码支付 ¥1", "正式版这里会展示微信支付 Native 二维码，并等待后端回调确认订单。"],
+        alipay: ["支付宝扫码支付 ¥1", "正式版这里会跳转支付宝收银台或展示当面付二维码，支付完成后由后端验签开通。"],
+        card: ["其他方式 ¥1", "可以接 Stripe、PayPal、人工转账或兑换码。正式版仍建议统一走后端订单和权益系统。"]
+      };
+      channelTitle.textContent = content[channel][0];
+      channelDesc.textContent = content[channel][1];
     }
 
     function updateStats() {
@@ -1160,6 +1622,7 @@
 
     async function copyWechatHtml() {
       update();
+      if (!requireUnlock("复制到公众号")) return;
       if (fallbackCopyHtml(state.html)) {
         showToast("已复制排版内容。现在打开公众号编辑器，在正文区域粘贴即可。");
         return;
@@ -1185,6 +1648,7 @@
 
     async function copySource() {
       update();
+      if (!requireUnlock("复制 HTML 源码")) return;
       try {
         await navigator.clipboard.writeText(state.html);
         showToast("HTML 源码已复制。");
@@ -1264,6 +1728,7 @@
     }
 
     function polishDraft() {
+      if (!requireUnlock("智能清稿")) return;
       const source = editor.value.trim();
       if (!source) {
         showToast("先写入内容，再清稿。");
@@ -1324,6 +1789,24 @@
     templateSelect.addEventListener("change", update);
     colorInput.addEventListener("input", update);
     fontSelect.addEventListener("change", update);
+    buyBtn.addEventListener("click", () => showPaymentModal("完整产品"));
+    unlockBadge.addEventListener("click", () => showPaymentModal(state.unlocked ? "权益状态" : "完整产品"));
+    closePaymentBtn.addEventListener("click", hidePaymentModal);
+    paymentModal.addEventListener("click", (event) => {
+      if (event.target === paymentModal) hidePaymentModal();
+    });
+    simulatePaidBtn.addEventListener("click", () => {
+      const activeChannel = payChannels.find((button) => button.classList.contains("active"))?.dataset.channel || "demo";
+      unlockProduct(activeChannel);
+    });
+    copyOrderBtn.addEventListener("click", () => {
+      fallbackCopyPlainText(state.orderId || createOrderId());
+      showToast(`订单号已复制：${state.orderId}`);
+    });
+    resetUnlockBtn.addEventListener("click", resetUnlock);
+    for (const button of payChannels) {
+      button.addEventListener("click", () => setPaymentChannel(button.dataset.channel));
+    }
     copyBtn.addEventListener("click", copyWechatHtml);
     copySourceBtn.addEventListener("click", copySource);
     saveBtn.addEventListener("click", () => saveDraft(true));
@@ -1332,6 +1815,7 @@
     polishBtn.addEventListener("click", polishDraft);
     for (const chip of templateChips) {
       chip.addEventListener("click", () => {
+        if (chip.dataset.premium === "true" && !requireUnlock(chip.textContent.trim())) return;
         templateSelect.value = chip.dataset.templateChip;
         update();
         showToast(`已切换为${chip.textContent.trim()}。`);
@@ -1352,6 +1836,8 @@
       showToast("内容已清空。");
     });
     htmlBtn.addEventListener("click", showHtml);
+    readUnlockState();
+    setPaymentChannel("wechat");
     restoreDraft(false);
     update();
   </script>
