@@ -850,28 +850,25 @@
       flex-wrap: wrap;
     }
 
-    .unlock-code-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .unlock-code-row input {
-      width: 100%;
-      min-height: 46px;
-      border: 1px solid var(--line);
+    .pay-status-panel {
+      padding: 14px 16px;
       border-radius: 8px;
-      padding: 0 14px;
-      font: inherit;
+      background: linear-gradient(135deg, rgba(0, 168, 135, .1), rgba(255, 212, 90, .16));
+      border: 1px solid rgba(0, 168, 135, .22);
       color: var(--ink);
-      background: #ffffff;
-      outline: none;
+      display: grid;
+      gap: 6px;
     }
 
-    .unlock-code-row input:focus {
-      border-color: rgba(0, 168, 135, .55);
-      box-shadow: 0 0 0 4px rgba(0, 168, 135, .12);
+    .pay-status-panel strong {
+      font-size: 15px;
+    }
+
+    .pay-status-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
     }
 
     .pay-note {
@@ -1192,7 +1189,7 @@
             <li>高级模板：商务简报、醒目营销</li>
             <li>智能清稿：自动整理标题、段落和列表</li>
             <li>解锁复制：复制到公众号和 HTML 源码</li>
-            <li>付款核对后：输入开通码开启功能</li>
+            <li>确认收款后：点击链接自动开通</li>
           </ul>
         </aside>
 
@@ -1207,19 +1204,19 @@
             <div class="fake-qr hidden" id="demoQr" aria-label="演示二维码"></div>
             <div class="qr-copy">
               <strong id="channelTitle">微信扫码支付 ¥1</strong>
-              <p id="channelDesc">请使用微信扫码支付 1 元。付款后复制订单号发给店主，店主确认收款后会给你开通码。</p>
+              <p id="channelDesc">请使用微信扫码支付 1 元。付款后提交订单给店主，确认收款后会收到一键开通链接。</p>
             </div>
           </div>
-          <div class="unlock-code-row">
-            <input id="unlockCodeInput" type="text" autocomplete="off" placeholder="输入付款后获得的开通码">
-            <button class="btn primary" id="verifyCodeBtn">验证并解锁</button>
+          <div class="pay-status-panel">
+            <strong>付款后不用输开通码</strong>
+            <p>扫码付款后，点击下方按钮复制订单信息发给店主。店主确认到账后，发你一条一键开通链接，点开即可自动解锁。</p>
           </div>
           <div class="pay-actions">
-            <button class="btn" id="copyOrderBtn">复制订单号</button>
+            <button class="btn primary" id="copyOrderBtn">我已付款，复制订单给店主</button>
             <button class="btn" id="resetUnlockBtn">重置未解锁</button>
           </div>
           <div class="pay-note">
-            当前是收款码 + 人工核对开通链路：用户付款后不会自动解锁，必须输入你确认收款后发出的开通码。正式自动开通仍需要后端订单、支付回调验签和用户权益系统。
+            当前是收款码 + 人工确认 + 一键开通链接：客户不用输入开通码。真正自动确认付款仍需要微信支付商户号、后端订单、支付回调验签和用户权益系统。
           </div>
           <div class="integration-flow">
             <strong>真实上线链路：</strong>
@@ -1305,8 +1302,6 @@
     const copyHost = document.getElementById("copyHost");
     const paymentModal = document.getElementById("paymentModal");
     const closePaymentBtn = document.getElementById("closePaymentBtn");
-    const unlockCodeInput = document.getElementById("unlockCodeInput");
-    const verifyCodeBtn = document.getElementById("verifyCodeBtn");
     const copyOrderBtn = document.getElementById("copyOrderBtn");
     const resetUnlockBtn = document.getElementById("resetUnlockBtn");
     const channelTitle = document.getElementById("channelTitle");
@@ -1592,8 +1587,8 @@
       return value.trim().toUpperCase().replace(/\s+/g, "");
     }
 
-    function validUnlockCodes() {
-      const order = state.orderId || localStorage.getItem(orderKey) || createOrderId();
+    function validUnlockCodes(orderId = "") {
+      const order = orderId || state.orderId || localStorage.getItem(orderKey) || createOrderId();
       const tail = order.replace(/[^A-Z0-9]/gi, "").slice(-4).toUpperCase();
       return [
         "YUE-1YUAN-2026",
@@ -1601,22 +1596,48 @@
       ];
     }
 
-    function verifyUnlockCode() {
-      const code = normalizeCode(unlockCodeInput.value);
-      const allowed = validUnlockCodes().map(normalizeCode);
-      if (!code) {
-        showToast("请输入付款后获得的开通码。");
-        return;
-      }
-      if (!allowed.includes(code)) {
-        showToast("开通码不正确。请先完成付款，并向店主索取开通码。");
-        return;
-      }
-      const activeChannel = payChannels.find((button) => button.classList.contains("active"))?.dataset.channel || "manual";
-      unlockProduct(activeChannel, code);
+    function buildUnlockUrl(orderId = state.orderId || createOrderId()) {
+      const token = validUnlockCodes(orderId)[1];
+      return `${window.location.origin}${window.location.pathname}?order=${encodeURIComponent(orderId)}&unlock=${encodeURIComponent(token)}`;
     }
 
-    function unlockProduct(channel = "manual", unlockCode = "") {
+    function checkUnlockLink() {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("unlock");
+      const orderFromUrl = params.get("order");
+      if (!token) return;
+      if (orderFromUrl) {
+        state.orderId = orderFromUrl;
+        localStorage.setItem(orderKey, orderFromUrl);
+      }
+      const order = state.orderId || localStorage.getItem(orderKey) || createOrderId();
+      const allowed = validUnlockCodes(order).map(normalizeCode);
+      if (allowed.includes(normalizeCode(token))) {
+        unlockProduct("unlock-link", normalizeCode(token), "一键开通成功，已解锁高级功能。");
+        window.history.replaceState(null, "", `${window.location.origin}${window.location.pathname}`);
+        return;
+      }
+      showPaymentModal("开通链接");
+      showToast("开通链接无效，请联系店主重新确认。");
+    }
+
+    function copyPaidOrder() {
+      const order = state.orderId || createOrderId();
+      state.orderId = order;
+      localStorage.setItem(orderKey, order);
+      const message = [
+        "我已完成 1 元付款，请帮我开通公众号排版工具。",
+        `订单号：${order}`,
+        "产品：公众号一键排版 1 元体验版",
+        "支付方式：微信收款码",
+        "",
+        "店主确认到账后，可发我一键开通链接。"
+      ].join("\n");
+      fallbackCopyPlainText(message);
+      showToast("订单信息已复制，请在微信里发给店主确认。");
+    }
+
+    function unlockProduct(channel = "manual", unlockCode = "", message = "已解锁高级功能。") {
       const payload = {
         unlocked: true,
         productId: PAYMENT_CONFIG.productId,
@@ -1633,7 +1654,7 @@
       state.orderId = payload.orderId;
       updateUnlockUI();
       hidePaymentModal();
-      showToast("开通码验证成功，已解锁高级功能。");
+      showToast(message);
     }
 
     function resetUnlock() {
@@ -1650,9 +1671,9 @@
         button.classList.toggle("active", button.dataset.channel === channel);
       }
       const content = {
-        wechat: ["微信扫码支付 ¥1", "请使用微信扫码支付 1 元。付款后复制订单号发给店主，店主确认收款后会给你开通码。"],
+        wechat: ["微信扫码支付 ¥1", "请使用微信扫码支付 1 元。付款后复制订单信息发给店主，确认收款后会收到一键开通链接。"],
         alipay: ["支付宝扫码支付 ¥1", "当前还没有配置支付宝收款码。正式版可以接支付宝当面付或上传支付宝收款码。"],
-        card: ["其他方式 ¥1", "可以接 Stripe、PayPal、人工转账或开通码。正式版仍建议统一走后端订单和权益系统。"]
+        card: ["其他方式 ¥1", "可以接 Stripe、PayPal 或人工转账。正式版仍建议统一走后端订单和权益系统。"]
       };
       channelTitle.textContent = content[channel][0];
       channelDesc.textContent = content[channel][1];
@@ -1873,14 +1894,7 @@
     paymentModal.addEventListener("click", (event) => {
       if (event.target === paymentModal) hidePaymentModal();
     });
-    verifyCodeBtn.addEventListener("click", verifyUnlockCode);
-    unlockCodeInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") verifyUnlockCode();
-    });
-    copyOrderBtn.addEventListener("click", () => {
-      fallbackCopyPlainText(state.orderId || createOrderId());
-      showToast(`订单号已复制：${state.orderId}`);
-    });
+    copyOrderBtn.addEventListener("click", copyPaidOrder);
     resetUnlockBtn.addEventListener("click", resetUnlock);
     for (const button of payChannels) {
       button.addEventListener("click", () => setPaymentChannel(button.dataset.channel));
@@ -1917,6 +1931,7 @@
     readUnlockState();
     setPaymentChannel("wechat");
     restoreDraft(false);
+    checkUnlockLink();
     update();
   </script>
 </body>
