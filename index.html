@@ -1593,7 +1593,7 @@
       try {
         const raw = localStorage.getItem(unlockKey);
         const payload = raw ? JSON.parse(raw) : null;
-        state.unlocked = !!payload?.unlocked;
+        state.unlocked = !!payload?.unlocked && payload.mode === PAYMENT_CONFIG.mode && payload.channel === "member";
         state.orderId = payload?.orderId || localStorage.getItem(orderKey) || createOrderId();
         const memberRaw = localStorage.getItem(memberProfileKey);
         state.member = memberRaw ? JSON.parse(memberRaw) : null;
