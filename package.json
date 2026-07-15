@@ -1,0 +1,13 @@
+{
+  "name": "wechat-layout-membership",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Member login, 1 yuan order, admin confirmation, and payment webhook backend for the GitHub Pages tool.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
