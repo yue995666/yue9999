@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: yue9999-membership
+    runtime: node
+    plan: starter
+    region: singapore
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    disk:
+      name: membership-data
+      mountPath: /var/data
+      sizeGB: 5
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: DATA_DIR
+        value: /var/data
+      - key: ADMIN_KEY
+        generateValue: true
+      - key: TOKEN_SECRET
+        generateValue: true
+      - key: PAYMENT_WEBHOOK_SECRET
+        generateValue: true
