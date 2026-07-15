@@ -1370,10 +1370,14 @@
     const orderKey = "wechat-layout-tool-order-v1";
     const memberTokenKey = "wechat-layout-tool-member-token-v1";
     const memberProfileKey = "wechat-layout-tool-member-profile-v1";
+    const apiBaseKey = "wechat-layout-tool-api-base-v1";
+    const apiBaseFromUrl = new URLSearchParams(window.location.search).get("api");
+    if (apiBaseFromUrl) localStorage.setItem(apiBaseKey, apiBaseFromUrl.replace(/\/$/, ""));
     const PAYMENT_CONFIG = {
       mode: "membership",
       productId: "wechat_layout_unlock_001",
       amountFen: 100,
+      apiBase: (apiBaseFromUrl || localStorage.getItem(apiBaseKey) || "").replace(/\/$/, ""),
       createOrderUrl: "/api/orders",
       verifyOrderUrl: "/api/member/status"
     };
@@ -1694,13 +1698,16 @@
     }
 
     async function apiRequest(path, options = {}) {
+      const requestUrl = PAYMENT_CONFIG.apiBase && path.startsWith("/api/")
+        ? `${PAYMENT_CONFIG.apiBase}${path}`
+        : path;
       const headers = {
         "Content-Type": "application/json",
         ...(options.headers || {})
       };
       const token = localStorage.getItem(memberTokenKey);
       if (token) headers.Authorization = `Bearer ${token}`;
-      const response = await fetch(path, {
+      const response = await fetch(requestUrl, {
         ...options,
         headers
       });
